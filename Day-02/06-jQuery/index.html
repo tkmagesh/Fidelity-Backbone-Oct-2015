@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <style>
+        .completed{
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        li{
+            cursor: pointer;
+        }
+    </style>
+    <script>
+    /*
+    Use Cases
+    =========
+    1. Add a new task
+    2. Toggle a task as completed/incomplete
+    3. Remove completed tasks
+    4. Persist tasks in the localStorage
+    */
+    (function(){
+        window.addEventListener("DOMContentLoaded", init);
+        function init(){
+            var btnAdd = document.getElementById("btnAddTask");
+            btnAdd.addEventListener("click", onBtnAddTaskClick);
+
+            var btnRemoveCompleted = document.getElementById("btnRemoveCompleted");
+            btnRemoveCompleted.addEventListener("click", onBtnRemoveCompletedClick);
+
+            var olTaskList = document.getElementById("olTaskList");
+            var taskItems = olTaskList.children;
+            for(var i=0; i < taskItems.length; i++){
+                taskItems[i].addEventListener("click", onTaskItemClick);
+            }
+        }
+        function onTaskItemClick(){
+            /*if (this.classList.contains("completed")){
+                this.classList.remove("completed");
+            } else {
+                this.classList.add("completed");
+            }*/
+            this.classList.toggle("completed");
+        }
+        function onBtnAddTaskClick(){
+            var taskName = document.getElementById("txtTask").value;
+            var newTask = "<li>" + taskName + "</li>";
+            var olTaskList = document.getElementById("olTaskList");
+            olTaskList.innerHTML += newTask;
+        }
+        function onBtnRemoveCompletedClick(){
+
+        }
+    })();
+    </script>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    <hr>
+    <label for="">Task :</label>
+    <input type="text" name="" id="txtTask">
+    <input type="button" value="Add Task" id="btnAddTask">
+    <input type="button" value="Remove Completed" id="btnRemoveCompleted">
+    <ol id="olTaskList">
+        <li>Get ready for family day</li>
+        <li class="completed dummy">Learn JavaScript</li>
+    </ol>
+</body>
+</html>

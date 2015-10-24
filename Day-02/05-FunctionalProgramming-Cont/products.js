@@ -238,8 +238,7 @@ describe("GroupBy", function(){
         var result = {};
         for(var i=0; i<list.length; i++){
             var key = keySelector(list[i]);
-            if (typeof result[key] === 'undefined')
-                result[key] = [];
+            result[key] = result[key] || [];
             result[key].push(list[i]);
         }
         return result;
