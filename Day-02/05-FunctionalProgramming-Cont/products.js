@@ -232,3 +232,33 @@ describe("Transform", function(){
         console.log("Overall stock value = ", stockValue);
     });
 });
+
+describe("GroupBy", function(){
+    function groupBy(list, keySelector){
+        var result = {};
+        for(var i=0; i<list.length; i++){
+            var key = keySelector(list[i]);
+            if (typeof result[key] === 'undefined')
+                result[key] = [];
+            result[key].push(list[i]);
+        }
+        return result;
+    };
+    function printGroup(title, obj){
+        console.group(title);
+        for(var key in obj){
+            describe("Key - " + key, function(){
+                console.table(obj[key]);
+            });
+        }
+        console.groupEnd();
+    }
+    var productsByCategory = groupBy(products, function(p){ return p.category; });
+    printGroup("Products By Category", productsByCategory);
+
+    var productsByCost = groupBy(products, function(product){
+        return product.cost > 50 ? "costly" : "affordable";
+    });
+    printGroup("Products By Cost", productsByCost);
+
+});
