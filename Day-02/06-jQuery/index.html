@@ -14,6 +14,7 @@
             cursor: pointer;
         }
     </style>
+    <script src="jquery-2.1.4.js"></script>
     <script>
     /*
     Use Cases
@@ -24,36 +25,23 @@
     4. Persist tasks in the localStorage
     */
     (function(){
-        window.addEventListener("DOMContentLoaded", init);
-        function init(){
-            var btnAdd = document.getElementById("btnAddTask");
-            btnAdd.addEventListener("click", onBtnAddTaskClick);
-
-            var btnRemoveCompleted = document.getElementById("btnRemoveCompleted");
-            btnRemoveCompleted.addEventListener("click", onBtnRemoveCompletedClick);
-
-            var olTaskList = document.getElementById("olTaskList");
-            var taskItems = olTaskList.children;
-            for(var i=0; i < taskItems.length; i++){
-                taskItems[i].addEventListener("click", onTaskItemClick);
-            }
-        }
+        $(function init(){
+            $("#btnAddTask").on("click", onBtnAddTaskClick);
+            $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
+            //$("#olTaskList").delegate("li", "click", onTaskItemClick);
+            $("#olTaskList").on("click", "li", onTaskItemClick);
+        });
         function onTaskItemClick(){
-            /*if (this.classList.contains("completed")){
-                this.classList.remove("completed");
-            } else {
-                this.classList.add("completed");
-            }*/
-            this.classList.toggle("completed");
+            $(this).toggleClass("completed");
         }
         function onBtnAddTaskClick(){
-            var taskName = document.getElementById("txtTask").value;
-            var newTask = "<li>" + taskName + "</li>";
-            var olTaskList = document.getElementById("olTaskList");
-            olTaskList.innerHTML += newTask;
+            $("<li></li>")
+                .html($("#txtTask").val())
+                .appendTo("#olTaskList");
+
         }
         function onBtnRemoveCompletedClick(){
-
+            $("#olTaskList > li.completed").fadeOut('slow').remove();
         }
     })();
     </script>
@@ -69,5 +57,8 @@
         <li>Get ready for family day</li>
         <li class="completed dummy">Learn JavaScript</li>
     </ol>
+    <div id="divMessage">
+        This is a sample message
+    </div>
 </body>
 </html>
