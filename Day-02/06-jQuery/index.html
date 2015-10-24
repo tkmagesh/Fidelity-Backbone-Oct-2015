@@ -23,6 +23,17 @@
     2. Toggle a task as completed/incomplete
     3. Remove completed tasks
     4. Persist tasks in the localStorage
+
+    window.localStorage
+        - key/value store
+        - both key and value should be strings
+        - APIs
+            * setItem(key, value)
+            * getItem(key) => value
+            * removeItem(key)
+            * key(index) => key
+            * clear()
+            * length
     */
     (function(){
         $(function init(){
@@ -30,6 +41,10 @@
             $("#btnRemoveCompleted").click(onBtnRemoveCompletedClick);
             //$("#olTaskList").delegate("li", "click", onTaskItemClick);
             $("#olTaskList").on("click", "li", onTaskItemClick);
+
+            $("#divMessage").click(function(){
+                $(this).fadeToggle(5000).delay(3000).fadeToggle(5000);
+            });
         });
         function onTaskItemClick(){
             $(this).toggleClass("completed");
@@ -41,8 +56,11 @@
 
         }
         function onBtnRemoveCompletedClick(){
-            $("#olTaskList > li.completed").fadeOut('slow').remove();
+            $("#olTaskList > li.completed").fadeOut('slow', function(){
+                $(this).remove();
+            });
         }
+
     })();
     </script>
 </head>
