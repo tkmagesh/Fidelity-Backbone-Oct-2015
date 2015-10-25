@@ -139,7 +139,19 @@
         }
     }
 
+    $(function(){
+        window.calculator = new SalaryCalculator();
 
+        var view1 = new SalaryCalculatorView(calculator, "#calculatorTemplate");
+        view1.init();
+        view1.render();
+        view1.$root.appendTo(document.body);
+
+        var view2 = new SalaryCalculatorView(calculator, "#calculatorTemplate");
+        view2.init();
+        view2.render();
+        view2.$root.appendTo(document.body);
+    });
 
     </script>
 
