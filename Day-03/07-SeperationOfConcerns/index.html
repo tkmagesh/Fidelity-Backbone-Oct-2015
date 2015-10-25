@@ -32,11 +32,11 @@
         };
 
         var _eventHandlers = {
-            basic : null,
-            hra : null,
-            da : null,
-            tax : null,
-            salary : null
+            basic : [],
+            hra : [],
+            da : [],
+            tax : [],
+            salary : []
         }
 
         this.get = function(attrName){
@@ -45,14 +45,23 @@
 
         this.set = function(attrName, value){
             _data[attrName] = value;
-            var changeHandler = _eventHandlers[attrName];
-            if (typeof changeHandler === 'function')
-                changeHandler.call(this);
+            var changeHandlers = _eventHandlers[attrName];
+            for(var i=0; i<changeHandlers.length; i++){
+                var changeHandler = changeHandlers[i];
+                if (typeof changeHandler === 'function')
+                    changeHandler.apply(this);
+            }
         };
 
         this.addChangeListener = function(attrName, listenerFn){
-            _eventHandlers[attrName] = listenerFn;
-        }
+            _eventHandlers[attrName].push(listenerFn);
+        };
+        this.removeChangeListener = function(attrName, listenerFn){
+            var changeHandlers = _eventHandlers[attrName];
+            var handlerIndex = changeHandlers.indexOf(listenerFn);
+            if (handlerIndex !== -1)
+                changeHandlers.splice(handlerIndex, 1);
+        };
 
 
     }
