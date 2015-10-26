@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <style>
+        .completed{
+            color : red;
+            font-style: italic;
+            text-decoration: line-through;
+            font-weight: bold;
+        }
+    </style>
+    <script src="jquery-2.1.4.js"></script>
+    <script>
+    function Task(defaults){
+
+        var _data = defaults || {};
+
+        var _eventHandlers = {}
+
+        this.get = function(attrName){
+            return _data[attrName];
+        };
+
+        this.set = function(attrName, value){
+            if (_data[attrName] === value)
+                return;
+
+            _data[attrName] = value;
+            var self = this;
+            var changeHandlers = _eventHandlers[attrName] || [];
+            for(var i=0; i<changeHandlers.length; i++){
+                setTimeout((function(index, value){
+                    return function(){
+                        changeHandlers[index].apply(self, [value]);
+                    };
+                })(i, value));
+            }
+        };
+
+        this.addChangeListener = function(attrName, listenerFn){
+            _eventHandlers[attrName] = _eventHandlers[attrName] || [];
+            _eventHandlers[attrName].push(listenerFn);
+        };
+        this.removeChangeListener = function(attrName, listenerFn){
+            var changeHandlers = _eventHandlers[attrName] || [];
+            var handlerIndex = changeHandlers.indexOf(listenerFn);
+            if (handlerIndex !== -1)
+                changeHandlers.splice(handlerIndex, 1);
+        };
+    }
+    Task.prototype.toggle = function(){
+        this.set("isCompleted", !this.get("isCompleted"));
+    }
+    function TaskView(task){
+        this.model = task;
+        var $root = this.$root = $("<li></li>");
+        var self= this;
+        this.init = function(){
+            //react to user actions
+            $root.on("click", function(){
+                self.model.toggle();
+            });
+
+            //react to model changes
+            self.model.addChangeListener("name", function(value){
+                self.render();
+            });
+            self.model.addChangeListener("isCompleted", function(value){
+               self.render();
+            });
+        };
+        this.render = function(){
+            $root.html(self.model.get("name"));
+            if (self.model.get("isCompleted")){
+                   $root.addClass("completed");
+               } else {
+                   $root.removeClass("completed");
+               }
+            return this;
+        }
+    }
+    </script>
+</head>
+<body>
+
+</body>
+</html>
