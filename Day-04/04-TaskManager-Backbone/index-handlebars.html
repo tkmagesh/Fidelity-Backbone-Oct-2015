@@ -60,8 +60,12 @@
             this.model.toggle();
         },
         initialize : function(){
-            _.bindAll(this, "render");
+            _.bindAll(this, "render", "remove");
             this.model.on("change", this.render);
+            this.model.on("destroy", this.remove);
+        },
+        remove : function(){
+            this.$el.remove();
         },
         render : function(){
             if (!this.templateFn){
@@ -77,7 +81,8 @@
         model : '',
         el : ".content",
         events : {
-            "click #btnAddTask" : "addNewTask"
+            "click #btnAddTask" : "addNewTask",
+            "click #btnRemoveCompleted" : "removeCompleted"
         },
         initialize : function(){
             this.model.on("new", this.onNewTaskAdded.bind(this))
@@ -93,6 +98,9 @@
             var taskName = this.$("#txtTaskName").val();
             var newTask = new Task({name : taskName});
             this.model.add(newTask);
+        },
+        removeCompleted : function(){
+            this.model.removeCompleted();
         }
     });
 
@@ -103,8 +111,19 @@
         add : function(task){
             this.get("tasks").push(task);
             this.trigger("new", task);
+        },
+        removeCompleted : function(){
+            var tasks = this.get("tasks");
+            for(var i=tasks.length-1; i>=0; i--){
+                var task = tasks[i];
+                if (task.get("isCompleted")){
+                    //task.destroy();
+                    task.trigger("destroy");
+                    tasks.splice(i,1);
+                }
+            }
         }
-    })
+    });
 
     $(function(){
         window.appModel = new TaskAppModel();
