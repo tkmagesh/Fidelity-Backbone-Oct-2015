@@ -64,7 +64,6 @@
             this.model.on("change", this.render);
         },
         render : function(){
-            console.log(this.model.toJSON());
             if (!this.templateFn){
                 this.templateFn = Handlebars.compile($(this.templateId).html());
             }
@@ -72,19 +71,57 @@
             return this;
         }
     });
-    var t1 = new Task({name : "Explore Delhi"});
-    var tv1 = new TaskView({model : t1});
 
-    var t2 = new Task({name : "Master jQuery", isCompleted : true});
-    var tv2 = new TaskView({model : t2});
+
+    var TaskAppView = Backbone.View.extend({
+        model : '',
+        el : ".content",
+        events : {
+            "click #btnAddTask" : "addNewTask"
+        },
+        initialize : function(){
+            this.model.on("new", this.onNewTaskAdded.bind(this))
+        },
+        onNewTaskAdded: function(newTask){
+            var newTaskView = new TaskView({model : newTask});
+            newTaskView.render().$el.appendTo(this.$("#olTaskList"));
+            this.$(".taskCount").html(this.model.get("tasks").length);
+        },
+        addNewTask : function(){
+            //create a new task
+            //add it to the current model
+            var taskName = this.$("#txtTaskName").val();
+            var newTask = new Task({name : taskName});
+            this.model.add(newTask);
+        }
+    });
+
+    var TaskAppModel = Backbone.Model.extend({
+        defaults : {
+            tasks : []
+        },
+        add : function(task){
+            this.get("tasks").push(task);
+            this.trigger("new", task);
+        }
+    })
 
     $(function(){
-        tv1.render().$el.appendTo(document.body);
-        tv2.render().$el.appendTo(document.body);
+        window.appModel = new TaskAppModel();
+        var appView = new TaskAppView({ model : appModel });
     })
     </script>
 </head>
 <body>
-
+    <h1>Task Manager</h1>
+    <hr>
+    <section class="content">
+        <h3 class="taskCount"></h3>
+        <label for="">Task :</label>
+        <input type="text" name="" id="txtTaskName">
+        <input type="button" value="Add Task" id="btnAddTask">
+        <input type="button" value="Remove Completed" id="btnRemoveCompleted">
+        <ol id="olTaskList"></ol>
+    </section>
 </body>
 </html>
