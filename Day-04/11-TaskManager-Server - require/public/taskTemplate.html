@@ -1,0 +1,11 @@
+{{#if isEdit}}
+            <input type='text' id='txtTaskName' value='{{name}}'>
+            <input type='button' value='Save' id='btnEditSave'>
+        {{else}}
+            {{#if isCompleted}}
+                <span class='spanTaskName completed'>{{name}}</span>
+            {{else}}
+                <span class='spanTaskName'>{{name}}</span>
+            {{/if}}
+            <input type='button' value='Edit' id='btnEditSave'>
+        {{/if}}

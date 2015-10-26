@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <style>
+        .completed{
+            color : red;
+            font-style: italic;
+            text-decoration: line-through;
+            font-weight: bold;
+        }
+    </style>
+    <script src="main.js"></script>
+    <script src="jquery-2.1.4.js"></script>
+    <script src="underscore.js"></script>
+    <script src="backbone.js"></script>
+    <script src="handlebars-v4.0.2.js"></script>
+    <script type="text/template" id="taskTemplate">
+        {{#if isEdit}}
+            <input type='text' id='txtTaskName' value='{{name}}'>
+            <input type='button' value='Save' id='btnEditSave'>
+        {{else}}
+            {{#if isCompleted}}
+                <span class='spanTaskName completed'>{{name}}</span>
+            {{else}}
+                <span class='spanTaskName'>{{name}}</span>
+            {{/if}}
+            <input type='button' value='Edit' id='btnEditSave'>
+        {{/if}}
+    </script>
+    <script src="Task.js"></script>
+    <script src="TaskView.js"></script>
+    <script src="TaskAppModel.js"></script>
+    <script src="TaskAppView.js"></script>
+
+</head>
+<body>
+    <h1>Task Manager</h1>
+    <hr>
+    <section class="content">
+        <h3 class="taskCount"></h3>
+        <label for="">Task :</label>
+        <input type="text" name="" id="txtTaskName">
+        <input type="button" value="Add Task" id="btnAddTask">
+        <input type="button" value="Remove Completed" id="btnRemoveCompleted">
+        <ol id="olTaskList"></ol>
+    </section>
+</body>
+</html>
