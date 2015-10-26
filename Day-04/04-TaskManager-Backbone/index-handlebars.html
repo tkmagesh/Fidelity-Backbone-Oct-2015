@@ -14,7 +14,20 @@
     <script src="jquery-2.1.4.js"></script>
     <script src="underscore.js"></script>
     <script src="backbone.js"></script>
-
+    <script src="handlebars-v4.0.2.js"></script>
+    <script type="text/template" id="taskTemplate">
+        {{#if isEdit}}
+            <input type='text' id='txtTaskName' value='{{name}}'>
+            <input type='button' value='Save' id='btnEditSave'>
+        {{else}}
+            {{#if isCompleted}}
+                <span class='spanTaskName completed'>{{name}}</span>
+            {{else}}
+                <span class='spanTaskName'>{{name}}</span>
+            {{/if}}
+            <input type='button' value='Edit' id='btnEditSave'>
+        {{/if}}
+    </script>
     <script>
     var Task = Backbone.Model.extend({
         defaults : {
@@ -30,10 +43,11 @@
         }
     });
     var TaskView = Backbone.View.extend({
+        templateId : "#taskTemplate",
         model : Task,
         tagName : "li",
         events :{
-            "click .taskName" : "toggleTask",
+            "click .spanTaskName" : "toggleTask",
             "click #btnEditSave" : "editSaveTask"
         },
         editSaveTask : function(){
@@ -48,26 +62,13 @@
         initialize : function(){
             _.bindAll(this, "render");
             this.model.on("change", this.render);
-            this.$el.append("<span class='spanTaskName'></span><input type='text' id='txtTaskName'><input type='button' value='Edit' id='btnEditSave'>");
         },
         render : function(){
-            this.$(".spanTaskName").html(this.model.get("name"));
-            this.$("#txtTaskName").hide();
-            if (this.model.get("isCompleted")){
-                this.$(".taskName").addClass("completed");
-            } else {
-                this.$(".taskName").removeClass("completed");
+            console.log(this.model.toJSON());
+            if (!this.templateFn){
+                this.templateFn = Handlebars.compile($(this.templateId).html());
             }
-            if (this.model.get("isEdit")){
-                this.$("#txtTaskName").val(this.model.get("name"));
-                this.$(".spanTaskName").hide();
-                this.$("#txtTaskName").show();
-                this.$("#btnEditSave").val("Save");
-            } else {
-                this.$(".spanTaskName").show();
-                this.$("#txtTaskName").hide();
-                this.$("#btnEditSave").val("Edit");
-            }
+            this.$el.html(this.templateFn(this.model.toJSON()));
             return this;
         }
     });
