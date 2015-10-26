@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <style>
+        .completed{
+            color : red;
+            font-style: italic;
+            text-decoration: line-through;
+            font-weight: bold;
+        }
+    </style>
+    <script src="jquery-2.1.4.js"></script>
+    <script src="underscore.js"></script>
+    <script src="backbone.js"></script>
+    <script>
+    var Task = Backbone.Model.extend({
+        defaults : {
+            name : '',
+            isCompleted : false
+        },
+        toggle : function(){
+            this.set("isCompleted", !this.get("isCompleted"));
+        }
+    });
+    var TaskView = Backbone.View.extend({
+        model : Task,
+        tagName : "li",
+        events :{
+            "click" : "toggleTask"
+        },
+        toggleTask : function(){
+            this.model.toggle();
+        },
+        initialize : function(){
+            _.bindAll(this, "render");
+            this.model.on("change", this.render);
+        },
+        render : function(){
+            this.$el.html(this.model.get("name"));
+            if (this.model.get("isCompleted")){
+                this.$el.addClass("completed");
+            } else {
+                this.$el.removeClass("completed");
+            }
+            return this;
+        }
+    });
+    var t1 = new Task({name : "Explore Delhi"});
+    var tv1 = new TaskView({model : t1});
+
+    var t2 = new Task({name : "Master jQuery", isCompleted : true});
+    var tv2 = new TaskView({model : t2});
+
+    $(function(){
+        tv1.render().$el.appendTo(document.body);
+        tv2.render().$el.appendTo(document.body);
+    })
+    </script>
+</head>
+<body>
+
+</body>
+</html>
